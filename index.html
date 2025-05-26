@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Energy vs Output Calculator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .main-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 1rem;
+        }
+        
+        @media (min-width: 768px) {
+            .main-container {
+                padding: 2rem;
+            }
+        }
+        
+        .header-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 2rem;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .header-card h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+        
+        @media (min-width: 768px) {
+            .header-card h1 {
+                font-size: 2.5rem;
+            }
+        }
+        
+        .header-card p {
+            color: #6c757d;
+            font-size: 1.1rem;
+            margin: 0;
+        }
+        
+        .form-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        @media (min-width: 768px) {
+            .form-card {
+                padding: 3rem;
+            }
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 12px;
+            border: 2px solid #e9ecef;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.15);
+            background: rgba(255, 255, 255, 1);
+        }
+        
+        .form-range {
+            margin: 1rem 0;
+        }
+        
+        .range-container {
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+        }
+        
+        .range-value {
+            font-weight: 700;
+            color: #667eea;
+            font-size: 1.2rem;
+        }
+        
+        .range-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 0.5rem;
+        }
+        
+        .btn-calculate {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 2rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: white;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 1rem;
+        }
+        
+        @media (min-width: 768px) {
+            .btn-calculate {
+                width: auto;
+                padding: 1rem 3rem;
+            }
+        }
+        
+        .btn-calculate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            color: white;
+        }
+        
+        .result-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-top: 2rem;
+            display: none;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        
+        .result-score {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        @media (max-width: 767px) {
+            .result-score {
+                font-size: 2.5rem;
+            }
+        }
+        
+        .result-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        
+        .mood-display {
+            font-size: 2rem;
+            margin: 1rem 0;
+        }
+        
+        .productivity-badge {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.2);
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+        
+        .mb-3 {
+            margin-bottom: 1.5rem !important;
+        }
+        
+        .mb-4 {
+            margin-bottom: 2rem !important;
+        }
+        
+        /* Custom emoji select styling */
+        .emoji-option {
+            font-size: 1.2rem;
+        }
+        
+        /* Animation for result appearance */
+        .result-card.show {
+            animation: slideUp 0.5s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Responsive improvements */
+        @media (max-width: 576px) {
+            .main-container {
+                margin: 1rem auto;
+                padding: 0.5rem;
+            }
+            
+            .header-card, .form-card {
+                padding: 1.5rem;
+            }
+            
+            .header-card h1 {
+                font-size: 1.8rem;
+            }
+            
+            .result-card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container main-container">
+        <!-- Header -->
+        <div class="header-card">
+            <h1>🧠 Energy vs Output Calculator</h1>
+            <p>Analyze your daily activities and optimize your productivity</p>
+        </div>
+        
+        <!-- Main Form -->
+        <div class="form-card">
+            <form id="productivityForm">
+                <div class="row">
+                    <div class="col-md-8 mb-3">
+                        <label for="activityName" class="form-label">Activity Name</label>
+                        <input type="text" class="form-control" id="activityName" 
+                               placeholder="e.g., Writing report, Morning workout, Team meeting" required>
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <label for="timeSpent" class="form-label">Time Spent (minutes)</label>
+                        <input type="number" class="form-control" id="timeSpent" 
+                               min="1" max="1440" placeholder="60" required>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="energySpent" class="form-label">
+                            Energy Spent: <span class="range-value" id="energyDisplay">5</span>
+                        </label>
+                        <div class="range-container">
+                            <input type="range" class="form-range" id="energySpent" 
+                                   min="1" max="10" value="5">
+                            <div class="range-labels">
+                                <span>1 - Very Low</span>
+                                <span>5 - Moderate</span>
+                                <span>10 - Exhausting</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="outputScore" class="form-label">
+                            Output Score: <span class="range-value" id="outputDisplay">5</span>
+                        </label>
+                        <div class="range-container">
+                            <input type="range" class="form-range" id="outputScore" 
+                                   min="1" max="10" value="5">
+                            <div class="range-labels">
+                                <span>1 - Poor</span>
+                                <span>5 - Good</span>
+                                <span>10 - Excellent</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="activityType" class="form-label">Activity Type</label>
+                        <select class="form-select" id="activityType" required>
+                            <option value="">Choose activity type...</option>
+                            <option value="Mental">🧠 Mental</option>
+                            <option value="Physical">💪 Physical</option>
+                            <option value="Mixed">⚡ Mixed</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="moodAfter" class="form-label">Mood After Activity</label>
+                        <select class="form-select emoji-option" id="moodAfter" required>
+                            <option value="">How did you feel?</option>
+                            <option value="😃">😃 Very Happy</option>
+                            <option value="🙂">🙂 Happy</option>
+                            <option value="😐">😐 Neutral</option>
+                            <option value="😞">😞 Disappointed</option>
+                            <option value="😣">😣 Frustrated</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="notes" class="form-label">Notes (Optional)</label>
+                    <textarea class="form-control" id="notes" rows="3" 
+                              placeholder="Any reflections or additional thoughts about this activity..."></textarea>
+                </div>
+                
+                <div class="text-center">
+                    <button type="submit" class="btn btn-calculate">
+                        📊 Calculate Productivity
+                    </button>
+                </div>
+            </form>
+            
+            <!-- Results Section -->
+            <div id="results" class="result-card">
+                <div class="result-score" id="productivityScore"></div>
+                <div class="result-text" id="resultMessage"></div>
+                <div class="mood-display" id="moodDisplay"></div>
+                <div class="productivity-badge" id="productivityLevel"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Update range displays
+        const energySpent = document.getElementById('energySpent');
+        const energyDisplay = document.getElementById('energyDisplay');
+        const outputScore = document.getElementById('outputScore');
+        const outputDisplay = document.getElementById('outputDisplay');
+        
+        energySpent.addEventListener('input', function() {
+            energyDisplay.textContent = this.value;
+        });
+        
+        outputScore.addEventListener('input', function() {
+            outputDisplay.textContent = this.value;
+        });
+        
+        // Form submission and calculation
+        document.getElementById('productivityForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            calculateProductivity();
+        });
+        
+        function calculateProductivity() {
+            // Get form values
+            const activityName = document.getElementById('activityName').value;
+            const timeSpent = parseFloat(document.getElementById('timeSpent').value);
+            const energySpent = parseFloat(document.getElementById('energySpent').value);
+            const outputScore = parseFloat(document.getElementById('outputScore').value);
+            const activityType = document.getElementById('activityType').value;
+            const moodAfter = document.getElementById('moodAfter').value;
+            const notes = document.getElementById('notes').value;
+            
+            // Calculate Productivity Score
+            // Formula: (Output Score / Energy Spent) * (Time Spent / 60)
+            const productivityScore = (outputScore / energySpent) * (timeSpent / 60);
+            
+            // Determine productivity level
+            let productivityLevel, levelColor;
+            if (productivityScore >= 2.0) {
+                productivityLevel = "🚀 Highly Productive";
+                levelColor = "#28a745";
+            } else if (productivityScore >= 1.0) {
+                productivityLevel = "✅ Productive";
+                levelColor = "#17a2b8";
+            } else if (productivityScore >= 0.5) {
+                productivityLevel = "⚡ Moderately Productive";
+                levelColor = "#ffc107";
+            } else {
+                productivityLevel = "🔄 Room for Improvement";
+                levelColor = "#dc3545";
+            }
+            
+            // Get mood emoji and text
+            const moodText = document.querySelector(`#moodAfter option[value="${moodAfter}"]`).textContent;
+            
+            // Create result message
+            const resultMessage = `The Productivity Score for your activity "${activityName}" is ${productivityScore.toFixed(2)}. Your mood was ${moodText}.`;
+            
+            // Display results
+            document.getElementById('productivityScore').textContent = productivityScore.toFixed(2);
+            document.getElementById('resultMessage').textContent = resultMessage;
+            document.getElementById('moodDisplay').textContent = moodAfter;
+            
+            const productivityBadge = document.getElementById('productivityLevel');
+            productivityBadge.textContent = productivityLevel;
+            productivityBadge.style.backgroundColor = levelColor;
+            
+            // Show results with animation
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.style.display = 'block';
+            resultsDiv.classList.add('show');
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+            
+            // Optional: Log activity data for future analysis
+            logActivity({
+                activityName,
+                timeSpent,
+                energySpent,
+                outputScore,
+                activityType,
+                moodAfter,
+                productivityScore: productivityScore.toFixed(2),
+                notes,
+                timestamp: new Date().toISOString()
+            });
+        }
+        
+        function logActivity(activityData) {
+            // Store activity data in localStorage for potential future features
+            let activities = JSON.parse(localStorage.getItem('productivityActivities') || '[]');
+            activities.push(activityData);
+            
+            // Keep only last 50 activities to prevent storage bloat
+            if (activities.length > 50) {
+                activities = activities.slice(-50);
+            }
+            
+            localStorage.setItem('productivityActivities', JSON.stringify(activities));
+        }
+        
+        // Add interactive feedback to form elements
+        document.querySelectorAll('.form-control, .form-select').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.style.transform = 'translateY(-1px)';
+                this.style.boxShadow = '0 4px 12px rgba(102, 126, 234, 0.15)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = '';
+            });
+        });
+        
+        // Add some helpful tips based on activity type
+        document.getElementById('activityType').addEventListener('change', function() {
+            const activityType = this.value;
+            const notesField = document.getElementById('notes');
+            
+            let placeholder = "Any reflections or additional thoughts about this activity...";
+            
+            if (activityType === 'Mental') {
+                placeholder = "Consider: Was this mentally stimulating? Did you feel focused? Any distractions?";
+            } else if (activityType === 'Physical') {
+                placeholder = "Consider: How did your body feel? Was the intensity appropriate? Any physical benefits noticed?";
+            } else if (activityType === 'Mixed') {
+                placeholder = "Consider: Which aspect (mental/physical) dominated? How well did they complement each other?";
+            }
+            
+            notesField.placeholder = placeholder;
+        });
+    </script>
+</body>
+</html>
